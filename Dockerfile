@@ -17,8 +17,7 @@ ENV NODE_ENV=production \
     PORT=3000 \
     DATA_DIR=/data
 
-# volume מתמשך למסד הנתונים (SQLite) — יש למפות אותו בפלטפורמה
-VOLUME /data
+# מסד הנתונים נשמר ב-/data — יש למפות לשם volume מתמשך בפלטפורמה (Railway Volumes וכו')
 EXPOSE 3000
 
 CMD ["npm", "start"]
