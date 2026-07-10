@@ -1,0 +1,476 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+:root {
+  --purple: #46178f;
+  --purple-dark: #25076b;
+  --answer-0: #e21b3c;
+  --answer-1: #1368ce;
+  --answer-2: #d89e00;
+  --answer-3: #26890c;
+  --card-bg: #ffffff;
+  --text-dark: #1f1235;
+}
+
+html,
+body,
+#root {
+  min-height: 100vh;
+}
+
+body {
+  font-family: "Rubik", "Segoe UI", "Arial Hebrew", system-ui, sans-serif;
+  background: linear-gradient(160deg, var(--purple) 0%, var(--purple-dark) 100%);
+  color: #fff;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+}
+
+input,
+textarea {
+  font-family: inherit;
+  font-size: 1rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 8px;
+  border: 2px solid #cfc6e5;
+  width: 100%;
+}
+
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--purple);
+}
+
+/* ---- פריסות כלליות ---- */
+
+.center-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+.logo {
+  font-size: clamp(2.5rem, 8vw, 4rem);
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.3);
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  opacity: 0.9;
+}
+
+.card {
+  background: var(--card-bg);
+  color: var(--text-dark);
+  border-radius: 14px;
+  padding: 1.4rem;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+
+/* ---- כפתורים ---- */
+
+.btn {
+  display: inline-block;
+  border: none;
+  border-radius: 10px;
+  padding: 0.7rem 1.5rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  text-decoration: none;
+  text-align: center;
+  transition: transform 0.08s, filter 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background: #ffa602;
+  color: #3a2500;
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+}
+
+.btn-danger {
+  background: var(--answer-0);
+  color: #fff;
+}
+
+.btn-big {
+  font-size: 1.35rem;
+  padding: 1rem 2.4rem;
+}
+
+/* ---- אדמין ---- */
+
+.admin-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.quiz-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+}
+
+.quiz-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.quiz-row .meta {
+  font-size: 0.9rem;
+  color: #6b6180;
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+.field label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.35rem;
+}
+
+.field .hint {
+  font-size: 0.85rem;
+  color: #6b6180;
+  margin-top: 0.3rem;
+}
+
+.material-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee7fb;
+  gap: 0.8rem;
+}
+
+.error-text {
+  color: var(--answer-0);
+  font-weight: 600;
+}
+
+.success-text {
+  color: var(--answer-3);
+  font-weight: 600;
+}
+
+/* ---- לובי ---- */
+
+.pin-display {
+  font-size: clamp(3rem, 12vw, 5.5rem);
+  font-weight: 900;
+  letter-spacing: 0.15em;
+  background: #fff;
+  color: var(--text-dark);
+  border-radius: 14px;
+  padding: 0.4rem 1.6rem;
+  direction: ltr;
+}
+
+.lobby-grid {
+  display: flex;
+  gap: 2rem;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.player-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  justify-content: center;
+  max-width: 640px;
+}
+
+.player-chip {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 999px;
+  padding: 0.45rem 1.1rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.qr-box {
+  background: #fff;
+  padding: 0.8rem;
+  border-radius: 12px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-dark);
+}
+
+.qr-box .join-url {
+  direction: ltr;
+  font-size: 0.85rem;
+  font-family: monospace;
+}
+
+/* ---- שאלה ---- */
+
+.question-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.question-text {
+  font-size: clamp(1.3rem, 4vw, 2rem);
+  font-weight: 800;
+  text-align: center;
+  background: #fff;
+  color: var(--text-dark);
+  border-radius: 14px;
+  padding: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.code-block {
+  direction: ltr;
+  text-align: left;
+  background: #171226;
+  color: #d7f5c9;
+  font-family: "SF Mono", "Fira Code", Consolas, monospace;
+  font-size: 0.95rem;
+  border-radius: 12px;
+  padding: 1rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+  white-space: pre;
+}
+
+.answers-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem;
+}
+
+@media (max-width: 560px) {
+  .answers-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.answer-btn {
+  border: none;
+  border-radius: 10px;
+  color: #fff;
+  font-size: 1.15rem;
+  font-weight: 700;
+  padding: 1.1rem 1rem;
+  min-height: 4.2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-align: start;
+  position: relative;
+  transition: transform 0.08s, opacity 0.2s;
+}
+
+.answer-btn .shape {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.answer-btn:hover:not(:disabled) {
+  transform: scale(1.02);
+}
+
+.answer-btn:disabled {
+  cursor: default;
+}
+
+.answer-0 { background: var(--answer-0); }
+.answer-1 { background: var(--answer-1); }
+.answer-2 { background: var(--answer-2); }
+.answer-3 { background: var(--answer-3); }
+
+.answer-btn.dimmed {
+  opacity: 0.35;
+}
+
+.answer-btn.correct {
+  outline: 5px solid #fff;
+  box-shadow: 0 0 0 8px rgba(38, 137, 12, 0.55);
+}
+
+.answer-btn.selected {
+  outline: 4px dashed #fff;
+}
+
+.answer-btn .dist {
+  margin-inline-start: auto;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 0.15rem 0.6rem;
+  font-size: 1rem;
+}
+
+/* ---- טיימר ---- */
+
+.countdown {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+
+.countdown .seconds {
+  font-size: 1.7rem;
+  font-weight: 900;
+  min-width: 2.2ch;
+  text-align: center;
+}
+
+.countdown .bar {
+  width: 130px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.countdown .bar-fill {
+  height: 100%;
+  background: #ffa602;
+  border-radius: 999px;
+  transition: width 0.2s linear;
+}
+
+/* ---- תוצאות ופודיום ---- */
+
+.result-banner {
+  font-size: clamp(1.6rem, 6vw, 2.6rem);
+  font-weight: 900;
+  text-align: center;
+  border-radius: 14px;
+  padding: 1.5rem;
+}
+
+.result-banner.good { background: var(--answer-3); }
+.result-banner.bad { background: var(--answer-0); }
+
+.leaderboard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 460px;
+  margin: 0 auto;
+}
+
+.leaderboard-row {
+  display: flex;
+  justify-content: space-between;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  padding: 0.6rem 1.1rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+.podium {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.podium-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  width: min(28vw, 170px);
+}
+
+.podium-name {
+  font-weight: 900;
+  font-size: 1.15rem;
+  text-align: center;
+  word-break: break-word;
+}
+
+.podium-score {
+  opacity: 0.85;
+}
+
+.podium-block {
+  width: 100%;
+  border-radius: 10px 10px 0 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.4rem;
+  font-weight: 900;
+  color: var(--text-dark);
+}
+
+.podium-1 .podium-block { height: 150px; background: #ffd700; }
+.podium-2 .podium-block { height: 110px; background: #d5d5e2; }
+.podium-3 .podium-block { height: 80px; background: #d08a4f; }
+
+.spinner {
+  width: 42px;
+  height: 42px;
+  border: 5px solid rgba(255, 255, 255, 0.25);
+  border-top-color: #ffa602;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+.pop-in {
+  animation: pop 0.35s ease-out both;
+}
