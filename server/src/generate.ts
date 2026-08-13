@@ -127,7 +127,7 @@ export async function generateQuestions(opts: {
   for (let attempt = 0; attempt < 2; attempt++) {
     try {
       const stream = getClient().messages.stream({
-        model: "claude-opus-4-8",
+        model: "claude-opus-5",
         max_tokens: 64000,
         thinking: { type: "adaptive" },
         system: SYSTEM_PROMPT,
