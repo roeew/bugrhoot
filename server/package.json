@@ -13,9 +13,11 @@
     "better-sqlite3": "^11.8.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
+    "fflate": "^0.8.3",
     "multer": "^2.2.0",
     "pdf-parse": "^1.1.1",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "word-extractor": "^1.0.4"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.12",

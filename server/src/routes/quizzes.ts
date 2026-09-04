@@ -56,6 +56,10 @@ quizzesRouter.put("/:id", (req, res) => {
   const quiz = db.prepare("SELECT * FROM quizzes WHERE id = ?").get(req.params.id) as QuizRow | undefined;
   if (!quiz) return res.status(404).json({ error: "החידון לא נמצא" });
   const { title, focus_description, question_count, question_time_sec } = req.body ?? {};
+  // שם ריק שנשלח במפורש הוא שגיאה — אחרת השמירה "מצליחה" בלי לשנות דבר
+  if (title !== undefined && (typeof title !== "string" || !title.trim())) {
+    return res.status(400).json({ error: "לחידון חייב להיות שם" });
+  }
   const newTitle = typeof title === "string" && title.trim() ? title.trim() : quiz.title;
   const newFocus = typeof focus_description === "string" ? focus_description : quiz.focus_description;
   const newCount = question_count != null ? Math.min(Math.max(Number(question_count) || quiz.question_count, 1), 30) : quiz.question_count;

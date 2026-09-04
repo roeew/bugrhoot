@@ -1,5 +1,36 @@
 // בדיקת end-to-end: מארח + שני שחקנים משחקים משחק מלא מול השרת (מצב MOCK_QUESTIONS)
 import { io } from "socket.io-client";
+import { zipSync, strToU8 } from "fflate";
+
+// --- בניית מסמכי OOXML מינימליים לבדיקת חילוץ הטקסט, בלי לצרף קבצים בינאריים לריפו ---
+
+const DOCX_MIME = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+const PPTX_MIME = "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+const xmlEscape = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+const docx = (...paragraphs) =>
+  zipSync({
+    "[Content_Types].xml": strToU8(
+      '<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="xml" ContentType="application/xml"/></Types>',
+    ),
+    "word/document.xml": strToU8(
+      '<?xml version="1.0"?><w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:body>' +
+        paragraphs.map((p) => `<w:p><w:r><w:t xml:space="preserve">${xmlEscape(p)}</w:t></w:r></w:p>`).join("") +
+        "</w:body></w:document>",
+    ),
+  });
+
+const pptx = (...lines) =>
+  zipSync({
+    "[Content_Types].xml": strToU8(
+      '<?xml version="1.0"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="xml" ContentType="application/xml"/></Types>',
+    ),
+    "ppt/slides/slide1.xml": strToU8(
+      '<?xml version="1.0"?><p:sld xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><p:cSld><p:spTree>' +
+        lines.map((l) => `<a:p><a:r><a:t>${xmlEscape(l)}</a:t></a:r></a:p>`).join("") +
+        "</p:spTree></p:cSld></p:sld>",
+    ),
+  });
 
 const URL = process.env.E2E_URL ?? "http://localhost:3000";
 const log = (...a) => console.log(...a);
@@ -22,17 +53,41 @@ assert(quizRes.status === 201 && quiz.id, "יצירת חידון דרך ה-API")
 
 const form = new FormData();
 form.append("files", new Blob(["# React\nuseState מחזיר זוג: ערך ופונקציית עדכון.\n```js\nconst [n, setN] = useState(0);\n```"], { type: "text/markdown" }), "notes.md");
+form.append("files", new Blob([docx("פסקה ראשונה במסמך", "פסקה שנייה במסמך")], { type: DOCX_MIME }), "מסמך.docx");
+form.append("files", new Blob([pptx("כותרת השקופית", "תוכן השקופית")], { type: PPTX_MIME }), "מצגת.pptx");
 const upRes = await fetch(`${URL}/api/quizzes/${quiz.id}/materials`, { method: "POST", body: form });
 const upBody = await upRes.json();
-assert(upRes.status === 201 && upBody.added.length === 1 && upBody.added[0].chars > 0, "העלאת קובץ וחילוץ טקסט");
+assert(
+  upRes.status === 201 && upBody.added.length === 3 && upBody.added.every((f) => f.chars > 0),
+  `העלאת md + docx + pptx וחילוץ טקסט מכולם (${JSON.stringify(upBody.errors)})`,
+);
 
 const detail = await (await fetch(`${URL}/api/quizzes/${quiz.id}`)).json();
-assert(detail.materials.length === 1, "הקובץ מופיע בפרטי החידון");
+assert(detail.materials.length === 3, "כל הקבצים מופיעים בפרטי החידון");
+
+// קובץ בינארי שאינו מסמך נתמך חייב להיכשל עם הודעה ברורה ולא להישמר
+const badForm = new FormData();
+badForm.append("files", new Blob([new Uint8Array([0, 1, 2, 3, 0xff, 0xfe])], { type: "application/octet-stream" }), "junk.bin");
+const badRes = await fetch(`${URL}/api/quizzes/${quiz.id}/materials`, { method: "POST", body: badForm });
+const badBody = await badRes.json();
+assert(badRes.status === 400 && badBody.added.length === 0 && badBody.errors.length === 1, "קובץ בינארי לא נתמך נדחה");
 
 // 2. משחק מלא בסוקטים
 const host = io(URL);
 const p1 = io(URL); // אלון — עונה נכון ומהר תמיד
 const p2 = io(URL); // בת-אל — איטית, טועה בשאלה 2
+
+// חידון ללא חומרים אינו ניתן לאירוח — הכלל נאכף בשרת ולא רק בממשק
+const emptyQuiz = await (
+  await fetch(`${URL}/api/quizzes`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ title: "חידון ריק" }),
+  })
+).json();
+const emptyRes = await new Promise((r) => host.emit("host:create", { quizId: emptyQuiz.id }, r));
+assert(!emptyRes.ok, `אירוח חידון ללא חומרים נדחה (${emptyRes.error ?? ""})`);
+await fetch(`${URL}/api/quizzes/${emptyQuiz.id}`, { method: "DELETE" });
 
 const createRes = await new Promise((r) => host.emit("host:create", { quizId: quiz.id }, r));
 assert(createRes.ok, "המארח פתח משחק");

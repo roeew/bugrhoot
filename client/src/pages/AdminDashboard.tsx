@@ -75,9 +75,15 @@ export default function AdminDashboard() {
               </div>
             </div>
             <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-              <Link className="btn btn-primary" to={`/host/${quiz.id}`}>
-                🎮 אירוח משחק
-              </Link>
+              {quiz.material_count > 0 ? (
+                <Link className="btn btn-primary" to={`/host/${quiz.id}`}>
+                  🎮 אירוח משחק
+                </Link>
+              ) : (
+                <button className="btn btn-primary" disabled title="יש לצרף לפחות קובץ חומר אחד במסך העריכה">
+                  🎮 אירוח משחק
+                </button>
+              )}
               <Link className="btn btn-secondary" style={{ color: "var(--text-dark)", borderColor: "#cfc6e5" }} to={`/admin/quiz/${quiz.id}`}>
                 עריכה
               </Link>

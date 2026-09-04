@@ -9,14 +9,14 @@ function Home() {
     <div className="center-page">
       <h1 className="logo">🐞 BugRhoot</h1>
       <p className="subtitle">משחק טריוויה חי — השאלות נוצרות מהחומרים שלכם</p>
-      <div className="home-actions">
+      <nav className="home-actions">
         <Link className="btn btn-primary btn-big" to="/join">
           הצטרפות למשחק
         </Link>
         <Link className="btn btn-secondary btn-big" to="/admin">
           מסך אדמין
         </Link>
-      </div>
+      </nav>
     </div>
   );
 }

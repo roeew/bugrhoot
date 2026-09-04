@@ -91,6 +91,14 @@ export function registerSockets(io: Server): void {
         .prepare("SELECT filename, extracted_text FROM materials WHERE quiz_id = ?")
         .all(quiz.id) as Pick<MaterialRow, "filename" | "extracted_text">[];
 
+      // חומרי בסיס הם תנאי לאירוח — בלעדיהם ה-AI ימציא שאלות ללא מקור
+      if (materials.length === 0) {
+        return cb({
+          ok: false,
+          error: "לא ניתן לארח משחק ללא חומרי בסיס — צרפו לפחות קובץ אחד במסך עריכת החידון",
+        });
+      }
+
       const game = createGame({
         quizId: quiz.id,
         quizTitle: quiz.title,

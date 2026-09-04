@@ -129,7 +129,106 @@ textarea:focus {
   padding: 1rem 2.4rem;
 }
 
+/* ---- מסך הבית ---- */
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: stretch;
+  gap: 1.25rem;
+  margin-top: 1rem;
+}
+
+.home-actions .btn {
+  min-width: 15rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
+}
+
+@media (max-width: 560px) {
+  .home-actions {
+    flex-direction: column;
+    width: min(100%, 22rem);
+    gap: 1rem;
+  }
+
+  .home-actions .btn {
+    min-width: 0;
+  }
+}
+
 /* ---- אדמין ---- */
+
+.header-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+/* פס "מוכנות לאירוח" — מראה בכל רגע מה עוד חסר לפני פתיחת משחק */
+.readiness-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.2rem;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 12px;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1.2rem;
+  font-size: 0.95rem;
+}
+
+.readiness-bar .readiness-title {
+  font-weight: 700;
+}
+
+.readiness {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem 1.1rem;
+  font-weight: 600;
+}
+
+.readiness li::before {
+  content: "○";
+  margin-inline-end: 0.35rem;
+}
+
+.readiness li.done {
+  opacity: 0.7;
+}
+
+.readiness li.done::before {
+  content: "✓";
+  color: #7ee36a;
+}
+
+.readiness li.todo {
+  color: #ffd48a;
+}
+
+/* תגיות חובה/רשות ליד תוויות השדות */
+.badge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 0.12rem 0.55rem;
+  margin-inline-start: 0.45rem;
+  vertical-align: middle;
+}
+
+.badge-required {
+  background: #fde8ec;
+  color: #a3122a;
+}
+
+.badge-optional {
+  background: #eee7fb;
+  color: #5b4b86;
+}
 
 .admin-header {
   display: flex;
@@ -169,7 +268,7 @@ textarea:focus {
   margin-bottom: 0.35rem;
 }
 
-.field .hint {
+.hint {
   font-size: 0.85rem;
   color: #6b6180;
   margin-top: 0.3rem;
